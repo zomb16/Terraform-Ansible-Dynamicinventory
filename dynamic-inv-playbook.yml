@@ -1,19 +1,53 @@
 ---
 - name: Install Nginx Using Ansible Role
-  hosts: private
+  hosts: tag_Owner_Sree
   become: yes
   become_user: root
+  #serial: 1
+  pre_tasks:
+    - name: Disable web server in load balancer
+      shell: apt install -y net-tools jq unzip
+    - name: Uninstall nginx if it exists
+      shell: sudo apt-get --purge remove nginx -y
+      async: 60
+      poll: 5
+  tags:
+  - pre
+  post_tasks:
+    - name: Check the Website
+      shell: hostname && curl http://{{ ip_address }}
+      register: result
+      delegate_to: 127.0.0.1
+    - name: Print return information from the previous task
+      ansible.builtin.debug:
+        var: result
+        verbosity: 2
+  tags:
+  - post
   vars:
     custom_heading: "Lets Test Some VARS"
+    ip_address: "{{ ansible_facts['eth0']['ipv4']['address'] }}"
   roles:
   - /etc/ansible/roles/nginxinstall  
+  tasks:
+  - name: Get uptime information
+    ansible.builtin.shell: /usr/bin/uptime
+    register: result
+  - name: Print return information from the previous task
+    ansible.builtin.debug:
+      var: result
+      verbosity: 2
+  tags:
+  - nginx
 
 - name: Install MySQL Using Ansible Role
-  hosts: allservers
+  hosts: tag_Name_TestServer03
   become: yes
   become_user: root
   roles:
   - { role: geerlingguy.mysql }
+  tags:
+  - mysqlinstall
   tasks:
   - name: create a new database 
     mysql_db: >
@@ -33,4 +67,4 @@
   - name: Add records to MySQL
     mysql_db: name=myflixdb state=import target=/tmp/dump.sql
     tags:
-    - mysql 
+    - mysql
