@@ -113,6 +113,7 @@ resource "aws_instance" "web-1" {
     Env        = "Prod"
     Owner      = "ramesh"
     CostCenter = "ABCD"
+    ASG = "yes"
   }
 }
 
@@ -129,6 +130,7 @@ resource "aws_instance" "web-2" {
     Env        = "Prod"
     Owner      = "ramesh"
     CostCenter = "ABCD"
+    ASG = "yes"
   }
 }
 
@@ -145,6 +147,7 @@ resource "aws_instance" "web-3" {
     Env        = "Prod"
     Owner      = "ramesh"
     CostCenter = "ABCD"
+    ASG = "yes"
   }
 }
 
