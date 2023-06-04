@@ -1,0 +1,45 @@
+---
+  - name: Play for Install Nginx on WebServers
+    hosts: allservers
+    gather_facts: yes
+    become: yes
+    become_user: root
+    vars:
+      custom_heading: "Hello Ramesh Welcome To DevOps B27 Batch Training By Sreeharsha Veerapalli"
+      todays_date: "{{ ansible_facts['date_time']['date'] }}"
+      host_name: "{{ ansible_facts['hostname'] }}"
+      fqdn_name: "{{ ansible_facts['fqdn'] }}"
+      os_family: "{{ ansible_facts['distribution'] }}"
+      os_dest: "{{ ansible_facts['distribution_version'] }}"
+      ip_address: "{{ ansible_facts['eth0']['ipv4']['address'] }}"
+      friends: ['Sree','Harsha','Raju', 'Kumar']
+    tasks:
+       - name: Run Apt Update
+         shell: apt update
+       - name: Install Nginx Server
+         apt: >
+           name=nginx
+           state=present
+       - name: Copy the index.j2 Template to index destination folder.
+         template: >
+            src=/home/ubuntu/class34/Terraform-Ansible-Publicservers/Playbook/index.j2
+            dest=/var/www/html/index.nginx-debian.html
+            owner=root
+            group=root
+            mode=0644
+       - name: Copy the style files to destination folder.
+         copy: >
+            src=/home/ubuntu/class34/Terraform-Ansible-Publicservers/Playbook/style.css
+            dest=/var/www/html/style.css
+            owner=root
+            group=root
+            mode=0644
+       - name: Copy the javascript files to destination folder.
+         copy: >
+            src=/home/ubuntu/class34/Terraform-Ansible-Publicservers/Playbook/scorekeeper.js
+            dest=/var/www/html/scorekeeper.js
+            owner=root
+            group=root
+            mode=0644
+       - name: restart nginx
+         command: service nginx restart

@@ -1,0 +1,10 @@
+---
+- hosts: allservers
+  gather_facts: no
+  become: yes
+  become_user: root
+  tasks:
+  - name: ansible copy file from remote to local.
+    fetch:
+     src: /var/www/html/index.nginx-debian.html
+     dest: /tmp

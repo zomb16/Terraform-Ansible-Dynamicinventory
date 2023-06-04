@@ -1,0 +1,35 @@
+---
+- name: Play For Installing Nginx Server
+  hosts: webservers 
+  become: yes
+  become_user: root
+  tasks:
+  - name: Perform Apt Update
+    shell: apt update
+    tags:
+    - update
+
+  - name: Install Nginx 
+    shell: apt install -y nginx
+    tags:
+    - install
+
+  - name: Start Nginx Service
+    shell: service nginx start
+    tags:
+    - service
+  tags:
+  - nginx
+
+- name: Play For Creating adminuser
+  hosts: allservers
+  become: yes
+  become_user: root
+  tasks:
+  - name: Create Users
+    user:
+     name: "vikram"
+     state: "present"
+     shell: "/bin/bash"
+  tags:
+  - users
